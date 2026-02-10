@@ -62,17 +62,17 @@ try {
 
                 @Override
                 public void onSuccess(PPStartPaymentResponseModel result) {
-                    Log.i("Pluspay", "Ödeme başarılı: " + result);
+                    Log.i("PPA2AClient", "Ödeme başarılı: " + result);
                 }
 
                 @Override
-                public void onError(Exception e) {
-                    Log.e("Pluspay", "Hata: " + e.getMessage());
+                public void onError(PlusPayException e) {
+                    Log.e("PPA2AClient", "Hata: " + e.getError_code() + ":" + e.getError_message());
                 }
             });
 
 } catch (Exception e) {
-    Log.e("Pluspay", "SDK çağrısı başarısız: " + e.getMessage());
+    Log.e("PPA2AClient", "SDK çağrısı başarısız: " + e.getMessage());
 }
 ```
 
@@ -96,17 +96,17 @@ try {
 
                 @Override
                 public void onSuccess(PPStartPaymentResponseModel result) {
-                    Log.i("Pluspay", "İptal başarılı: " + result);
+                    Log.i("PPA2AClient", "İptal başarılı: " + result);
                 }
 
                 @Override
-                public void onError(Exception e) {
-                    Log.e("Pluspay", "Hata: " + e.getMessage());
+                public void onError(PlusPayException e) {
+                    Log.e("PPA2AClient", "Hata: " + e.getError_code() + ":" + e.getError_message());
                 }
             });
 
 } catch (Exception e) {
-    Log.e("Pluspay", "SDK çağrısı başarısız: " + e.getMessage());
+    Log.e("PPA2AClient", "SDK çağrısı başarısız: " + e.getMessage());
 }
 ```
 
@@ -115,7 +115,7 @@ try {
 # ⚙ Parametre Güncelleme
 
 ```java
-try {
+
 
     List<String> types = Arrays.asList(
             PPParameterTypes.bank.name(),
@@ -129,23 +129,23 @@ try {
                     "P14240701371",
                     "client_token"
             );
-
+try {
     client.triggerParameters(request.toJsonString(),
             new PPA2ACallback<PPParametersResponseModel>() {
 
                 @Override
                 public void onSuccess(PPParametersResponseModel result) {
-                    Log.i("Pluspay", "Parametreler güncellendi: " + result);
+                    Log.i("PPA2AClient", "Parametreler güncellendi: " + result);
                 }
 
                 @Override
-                public void onError(Exception e) {
-                    Log.e("Pluspay", "Hata: " + e.getMessage());
+                public void onError(PlusPayException e) {
+                    Log.e("PPA2AClient", "Hata: " + e.getError_code() + ":" + e.getError_message());
                 }
             });
 
 } catch (Exception e) {
-    Log.e("Pluspay", "SDK çağrısı başarısız: " + e.getMessage());
+    Log.e("PPA2AClient", "SDK çağrısı başarısız: " + e.getMessage());
 }
 ```
 
@@ -154,7 +154,7 @@ try {
 # 🧾 Gün Sonu İşlemi
 
 ```java
-try {
+
 
     List<String> types = Arrays.asList(
             PPEodType.CASH.name(),
@@ -165,26 +165,27 @@ try {
             PPEodRequestModel.toRequest(
                     types,
                     false,
-                    "",
+                    "token",
                     "P14240701371"
             );
 
+try {
     client.triggerEod(request.toJsonString(),
             new PPA2ACallback<PPEodResponseModel>() {
 
                 @Override
                 public void onSuccess(PPEodResponseModel result) {
-                    Log.i("Pluspay", "Gün sonu başarılı: " + result);
+                    Log.i("PPA2AClient", "Gün sonu başarılı: " + result);
                 }
 
                 @Override
-                public void onError(Exception e) {
-                    Log.e("Pluspay", "Hata: " + e.getMessage());
+                public void onError(PlusPayException e) {
+                    Log.e("PPA2AClient", "Hata: " + e.getError_code() + ":" + e.getError_message());
                 }
             });
 
 } catch (Exception e) {
-    Log.e("Pluspay", "SDK çağrısı başarısız: " + e.getMessage());
+    Log.e("PPA2AClient", "SDK çağrısı başarısız: " + e.getMessage());
 }
 ```
 
