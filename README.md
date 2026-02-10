@@ -43,7 +43,7 @@ client.initialize()
 # 💳 EFT Satış (Ödeme Başlatma)
 
 ```java
-try {
+
 
     PPEftPaymentRequestModel request =
             PPEftPaymentRequestModel.toRequest(
@@ -56,7 +56,7 @@ try {
                     "your_token",
                     "P14240701371"
             );
-
+try {
     client.startPayment(request.toJsonString(),
             new PPA2ACallback<PPStartPaymentResponseModel>() {
 
@@ -81,7 +81,7 @@ try {
 # ❌ EFT İptal
 
 ```java
-try {
+
 
     PPEftCancelRequestModel request =
             PPEftCancelRequestModel.toRequest(
@@ -90,7 +90,7 @@ try {
                     "token",
                     "P14240701371"
             );
-
+try {
     client.cancelEftPayment(request.toJsonString(),
             new PPA2ACallback<PPStartPaymentResponseModel>() {
 
