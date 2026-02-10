@@ -1,0 +1,331 @@
+# 📦 PlusPay A2A Android SDK
+
+PlusPay A2A Android SDK, POS+ cihazları ile ödeme, EFT, sipariş işlemleri, parametre güncelleme ve gün sonu operasyonlarını uygulamanızdan yönetmenizi sağlar.
+
+Bu doküman SDK’nın kurulumu, temel kullanımı ve API referansını içerir.
+
+---
+
+# 📌 Kurulum
+
+`.aar` dosyasını projenizin **libs** klasörüne ekleyin.
+
+**app/build.gradle**
+
+```gradle
+dependencies {
+    implementation(files("libs/pluspay_a2a-debug.aar"))
+}
+```
+
+---
+
+# 🚀 SDK Başlatma
+
+Activity içerisinde istemci oluşturulmalı ve initialize edilmelidir.
+
+## Java
+
+```java
+PPA2AClient client = new PPA2AClient(this);
+client.initialize();
+```
+
+## Kotlin
+
+```kotlin
+val client = PPA2AClient(this)
+client.initialize()
+```
+
+---
+
+# 💳 EFT Satış (Ödeme Başlatma)
+
+```java
+try {
+
+    PPEftPaymentRequestModel request =
+            PPEftPaymentRequestModel.toRequest(
+                    100.0,
+                    "POS",
+                    "CC",
+                    UUID.randomUUID().toString(),
+                    0,
+                    0,
+                    "your_token",
+                    "P14240701371"
+            );
+
+    client.startPayment(request.toJsonString(),
+            new PPA2ACallback<PPStartPaymentResponseModel>() {
+
+                @Override
+                public void onSuccess(PPStartPaymentResponseModel result) {
+                    Log.i("Pluspay", "Ödeme başarılı: " + result);
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.e("Pluspay", "Hata: " + e.getMessage());
+                }
+            });
+
+} catch (Exception e) {
+    Log.e("Pluspay", "SDK çağrısı başarısız: " + e.getMessage());
+}
+```
+
+---
+
+# ❌ EFT İptal
+
+```java
+try {
+
+    PPEftCancelRequestModel request =
+            PPEftCancelRequestModel.toRequest(
+                    "",
+                    100,
+                    "token",
+                    "P14240701371"
+            );
+
+    client.cancelEftPayment(request.toJsonString(),
+            new PPA2ACallback<PPStartPaymentResponseModel>() {
+
+                @Override
+                public void onSuccess(PPStartPaymentResponseModel result) {
+                    Log.i("Pluspay", "İptal başarılı: " + result);
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.e("Pluspay", "Hata: " + e.getMessage());
+                }
+            });
+
+} catch (Exception e) {
+    Log.e("Pluspay", "SDK çağrısı başarısız: " + e.getMessage());
+}
+```
+
+---
+
+# ⚙ Parametre Güncelleme
+
+```java
+try {
+
+    List<String> types = Arrays.asList(
+            PPParameterTypes.bank.name(),
+            PPParameterTypes.multinet.name()
+    );
+
+    PPParameterRequestModel request =
+            PPParameterRequestModel.toRequest(
+                    types,
+                    false,
+                    "P14240701371",
+                    "client_token"
+            );
+
+    client.triggerParameters(request.toJsonString(),
+            new PPA2ACallback<PPParametersResponseModel>() {
+
+                @Override
+                public void onSuccess(PPParametersResponseModel result) {
+                    Log.i("Pluspay", "Parametreler güncellendi: " + result);
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.e("Pluspay", "Hata: " + e.getMessage());
+                }
+            });
+
+} catch (Exception e) {
+    Log.e("Pluspay", "SDK çağrısı başarısız: " + e.getMessage());
+}
+```
+
+---
+
+# 🧾 Gün Sonu İşlemi
+
+```java
+try {
+
+    List<String> types = Arrays.asList(
+            PPEodType.CASH.name(),
+            PPEodType.POS.name()
+    );
+
+    PPEodRequestModel request =
+            PPEodRequestModel.toRequest(
+                    types,
+                    false,
+                    "",
+                    "P14240701371"
+            );
+
+    client.triggerEod(request.toJsonString(),
+            new PPA2ACallback<PPEodResponseModel>() {
+
+                @Override
+                public void onSuccess(PPEodResponseModel result) {
+                    Log.i("Pluspay", "Gün sonu başarılı: " + result);
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.e("Pluspay", "Hata: " + e.getMessage());
+                }
+            });
+
+} catch (Exception e) {
+    Log.e("Pluspay", "SDK çağrısı başarısız: " + e.getMessage());
+}
+```
+
+---
+
+# 🔚 Activity Kapatılırken
+
+SDK kaynaklarını serbest bırakın.
+
+## Kotlin
+
+```kotlin
+override fun onDestroy() {
+    super.onDestroy()
+    client.dispose()
+}
+```
+
+## Java
+
+```java
+@Override
+protected void onDestroy() {
+    super.onDestroy();
+    client.dispose();
+}
+```
+
+---
+
+# 📚 İstemci API Referansı
+
+Tüm metodlar `PPA2AClient` üzerindedir.
+Başarılı durumda tipli response döner, hata durumunda **PPA2AException** fırlatır.
+
+| Metod             | İstek Modeli                | Yanıt Modeli                | Açıklama           |
+| ----------------- | --------------------------- | --------------------------- | ------------------ |
+| startPayment      | PPStartPaymentRequestModel  | PPStartPaymentResponseModel | Ödeme başlat       |
+| cancelPayment     | PPCancelPaymentRequestModel | PPStartPaymentResponseModel | Ödeme iptal        |
+| startEftPayment   | PPEftPaymentRequestModel    | PPStartPaymentResponseModel | EFT ödeme          |
+| cancelEftPayment  | PPEftCancelRequestModel     | PPStartPaymentResponseModel | EFT iptal          |
+| startOrderPayment | PPOrderPaymentRequestModel  | PPOrderPaymentResponseModel | Sipariş ödeme      |
+| triggerEod        | PPEodRequestModel           | PPEodResponseModel          | Gün sonu           |
+| triggerParameters | PPParameterRequestModel     | PPParametersResponseModel   | Parametre güncelle |
+
+---
+
+# 📦 Yanıt Modelleri
+
+## PPStartPaymentResponseModel
+
+* id
+* orderCode
+* paymentType
+* paymentMethod
+* totalAmount
+* totalPaid
+* amountDue
+* isPartial
+* partialType
+* source
+* status
+* actionStatus
+* invoice
+* payment
+* delivery
+
+---
+
+## PPOrderPaymentResponseModel
+
+* grandTotal
+* status
+* orderCode
+* totalAmount
+* totalPaid
+* amountDue
+* results
+
+---
+
+## PPEodResponseModel
+
+* results → PPEodResponseItem listesi
+
+---
+
+## PPParametersResponseModel
+
+* results → parametre güncelleme sonuçları
+
+---
+
+# 🔢 Enum Tanımları
+
+## PPPaymentType
+
+POS, PAYCELL, HEPSIPAY, ISTANBULCARD, CASH, ONLINE, BANK_TRANSFER, GASTROPAY, CIO_CARD, IWALLET, PAYE, MULTINET, METROPOL, FASTPAY, TICKET, EDENRED, SETCARD, SODEXO, GETIRPAY, TOKENFLEX, YEMEKMATIK, ON_CREDIT, VIRTUAL_POS, CUZDANPLUS
+
+## PPPaymentMethod
+
+CC, CASH, QR, QR_R, NFC, QUICKCODE, MOBILE, SWIPE, NONE, ONLINE, TRENDYOL, GETIR, YEMEKSEPETI, MIGROSYEMEK
+
+## PPEodType
+
+POS, CASH, BANK_TRANSFER, ONLINE, OTHER, MULTINET, SODEXO, SETCARD, TICKET, METROPOL, PAYE, TOKENFLEX, EDENRED, CUZDANPLUS, IWALLET
+
+## PPParameterTypes
+
+bank, multinet, metropol, paye, iwallet
+
+## PPPartialPaymentType
+
+AMOUNT, PRODUCT
+
+## PPOrderStatusEnum
+
+CANCEL, NOT_RESPONSE, WAITING, SUCCESS
+
+## PPDeliveryStatusEnum
+
+WAITING, PREPREING, READY, ONWAY, COMPLETE, CANCEL
+
+## PPDeliveryTypeEnum
+
+CASH_ORDER, PACKAGE_ORDER, TABLE_ORDER, TAKE_AWAY, TAKE_CLOSE
+
+---
+
+# ⚠ Hata Kodları
+
+| Kod                 | Açıklama              |
+| ------------------- | --------------------- |
+| LAUNCH_INTENT_ERROR | POS+ başlatılamadı    |
+| PP-A2A-PARSE        | Yanıt parse edilemedi |
+| PP-A2A-*            | POS+ hata kodları     |
+
+---
+
+# ✅ Notlar
+
+* Her işlem benzersiz transaction ID kullanmalıdır
+* Callback / exception yönetimi zorunludur
+* Activity destroy sırasında `dispose()` çağrılmalıdır
