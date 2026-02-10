@@ -43,21 +43,21 @@ client.initialize()
 # 💳 EFT Satış (Ödeme Başlatma)
 
 ```java
+PPEftPaymentRequestModel request =
+        PPEftPaymentRequestModel.toRequest(
+                100.0,
+                "POS",
+                "CC",
+                UUID.randomUUID().toString(),
+                0,
+                0,
+                "your_token",
+                "P14240701371"
+        );
 
-
-    PPEftPaymentRequestModel request =
-            PPEftPaymentRequestModel.toRequest(
-                    100.0,
-                    "POS",
-                    "CC",
-                    UUID.randomUUID().toString(),
-                    0,
-                    0,
-                    "your_token",
-                    "P14240701371"
-            );
 try {
-    client.startPayment(request.toJsonString(),
+    client.startPayment(
+            request.toJsonString(),
             new PPA2ACallback<PPStartPaymentResponseModel>() {
 
                 @Override
@@ -67,7 +67,9 @@ try {
 
                 @Override
                 public void onError(PlusPayException e) {
-                    Log.e("PPA2AClient", "Hata: " + e.getError_code() + ":" + e.getError_message());
+                    Log.e("PPA2AClient",
+                            "Hata: " + e.getError_code() +
+                            " : " + e.getError_message());
                 }
             });
 
@@ -81,8 +83,7 @@ try {
 # ❌ EFT İptal
 
 ```java
-
-
+try {
     PPEftCancelRequestModel request =
             PPEftCancelRequestModel.toRequest(
                     "",
@@ -90,8 +91,9 @@ try {
                     "token",
                     "P14240701371"
             );
-try {
-    client.cancelEftPayment(request.toJsonString(),
+
+    client.cancelEftPayment(
+            request.toJsonString(),
             new PPA2ACallback<PPStartPaymentResponseModel>() {
 
                 @Override
@@ -101,7 +103,9 @@ try {
 
                 @Override
                 public void onError(PlusPayException e) {
-                    Log.e("PPA2AClient", "Hata: " + e.getError_code() + ":" + e.getError_message());
+                    Log.e("PPA2AClient",
+                            "Hata: " + e.getError_code() +
+                            " : " + e.getError_message());
                 }
             });
 
@@ -115,32 +119,35 @@ try {
 # ⚙ Parametre Güncelleme
 
 ```java
+List<String> types = Arrays.asList(
+        PPParameterTypes.bank.name(),
+        PPParameterTypes.multinet.name()
+);
 
+PPParameterRequestModel request =
+        PPParameterRequestModel.toRequest(
+                types,
+                false,
+                "P14240701371",
+                "client_token"
+        );
 
-    List<String> types = Arrays.asList(
-            PPParameterTypes.bank.name(),
-            PPParameterTypes.multinet.name()
-    );
-
-    PPParameterRequestModel request =
-            PPParameterRequestModel.toRequest(
-                    types,
-                    false,
-                    "P14240701371",
-                    "client_token"
-            );
 try {
-    client.triggerParameters(request.toJsonString(),
+    client.triggerParameters(
+            request.toJsonString(),
             new PPA2ACallback<PPParametersResponseModel>() {
 
                 @Override
                 public void onSuccess(PPParametersResponseModel result) {
-                    Log.i("PPA2AClient", "Parametreler güncellendi: " + result);
+                    Log.i("PPA2AClient",
+                            "Parametreler güncellendi: " + result);
                 }
 
                 @Override
                 public void onError(PlusPayException e) {
-                    Log.e("PPA2AClient", "Hata: " + e.getError_code() + ":" + e.getError_message());
+                    Log.e("PPA2AClient",
+                            "Hata: " + e.getError_code() +
+                            " : " + e.getError_message());
                 }
             });
 
@@ -154,23 +161,22 @@ try {
 # 🧾 Gün Sonu İşlemi
 
 ```java
+List<String> types = Arrays.asList(
+        PPEodType.CASH.name(),
+        PPEodType.POS.name()
+);
 
-
-    List<String> types = Arrays.asList(
-            PPEodType.CASH.name(),
-            PPEodType.POS.name()
-    );
-
-    PPEodRequestModel request =
-            PPEodRequestModel.toRequest(
-                    types,
-                    false,
-                    "token",
-                    "P14240701371"
-            );
+PPEodRequestModel request =
+        PPEodRequestModel.toRequest(
+                types,
+                false,
+                "token",
+                "P14240701371"
+        );
 
 try {
-    client.triggerEod(request.toJsonString(),
+    client.triggerEod(
+            request.toJsonString(),
             new PPA2ACallback<PPEodResponseModel>() {
 
                 @Override
@@ -180,7 +186,9 @@ try {
 
                 @Override
                 public void onError(PlusPayException e) {
-                    Log.e("PPA2AClient", "Hata: " + e.getError_code() + ":" + e.getError_message());
+                    Log.e("PPA2AClient",
+                            "Hata: " + e.getError_code() +
+                            " : " + e.getError_message());
                 }
             });
 
@@ -218,9 +226,6 @@ protected void onDestroy() {
 
 # 📚 İstemci API Referansı
 
-Tüm metodlar `PPA2AClient` üzerindedir.
-Başarılı durumda tipli response döner, hata durumunda **PPA2AException** fırlatır.
-
 | Metod             | İstek Modeli                | Yanıt Modeli                | Açıklama           |
 | ----------------- | --------------------------- | --------------------------- | ------------------ |
 | startPayment      | PPStartPaymentRequestModel  | PPStartPaymentResponseModel | Ödeme başlat       |
@@ -237,81 +242,53 @@ Başarılı durumda tipli response döner, hata durumunda **PPA2AException** fı
 
 ## PPStartPaymentResponseModel
 
-* id
-* orderCode
-* paymentType
-* paymentMethod
-* totalAmount
-* totalPaid
-* amountDue
-* isPartial
-* partialType
-* source
-* status
-* actionStatus
-* invoice
-* payment
-* delivery
-
----
+```
+id, orderCode, paymentType, paymentMethod,
+totalAmount, totalPaid, amountDue,
+isPartial, partialType, source, status,
+actionStatus, invoice, payment, delivery
+```
 
 ## PPOrderPaymentResponseModel
 
-* grandTotal
-* status
-* orderCode
-* totalAmount
-* totalPaid
-* amountDue
-* results
-
----
+```
+grandTotal, status, orderCode,
+totalAmount, totalPaid, amountDue, results
+```
 
 ## PPEodResponseModel
 
-* results → PPEodResponseItem listesi
-
----
+```
+results → PPEodResponseItem listesi
+```
 
 ## PPParametersResponseModel
 
-* results → parametre güncelleme sonuçları
+```
+results → parametre güncelleme sonuçları
+```
 
 ---
 
 # 🔢 Enum Tanımları
 
-## PPPaymentType
+**PPPaymentType**
+POS, PAYCELL, HEPSIPAY, CASH, ONLINE, BANK_TRANSFER, MULTINET, …
 
-POS, PAYCELL, HEPSIPAY, ISTANBULCARD, CASH, ONLINE, BANK_TRANSFER, GASTROPAY, CIO_CARD, IWALLET, PAYE, MULTINET, METROPOL, FASTPAY, TICKET, EDENRED, SETCARD, SODEXO, GETIRPAY, TOKENFLEX, YEMEKMATIK, ON_CREDIT, VIRTUAL_POS, CUZDANPLUS
+**PPPaymentMethod**
+CC, CASH, QR, NFC, MOBILE, ONLINE, …
 
-## PPPaymentMethod
+**PPEodType**
+POS, CASH, ONLINE, MULTINET, …
 
-CC, CASH, QR, QR_R, NFC, QUICKCODE, MOBILE, SWIPE, NONE, ONLINE, TRENDYOL, GETIR, YEMEKSEPETI, MIGROSYEMEK
-
-## PPEodType
-
-POS, CASH, BANK_TRANSFER, ONLINE, OTHER, MULTINET, SODEXO, SETCARD, TICKET, METROPOL, PAYE, TOKENFLEX, EDENRED, CUZDANPLUS, IWALLET
-
-## PPParameterTypes
-
+**PPParameterTypes**
 bank, multinet, metropol, paye, iwallet
 
-## PPPartialPaymentType
-
+**PPPartialPaymentType**
 AMOUNT, PRODUCT
 
-## PPOrderStatusEnum
-
+**PPOrderStatusEnum**
 CANCEL, NOT_RESPONSE, WAITING, SUCCESS
-
-## PPDeliveryStatusEnum
-
-WAITING, PREPREING, READY, ONWAY, COMPLETE, CANCEL
-
-## PPDeliveryTypeEnum
-
-CASH_ORDER, PACKAGE_ORDER, TABLE_ORDER, TAKE_AWAY, TAKE_CLOSE
 
 ---
 
@@ -325,8 +302,130 @@ CASH_ORDER, PACKAGE_ORDER, TABLE_ORDER, TAKE_AWAY, TAKE_CLOSE
 
 ---
 
+# 📄 JSON Referansları
+
+⚠ Bu JSON modelleri .toRequest() işlevi ile SDK tarafından otomatik oluşturulur. Manuel üretmeniz gerekmez — yalnızca referans amaçlıdır.
+
+## EFT Ödeme
+
+```json
+{
+  "data": {
+    "total_amount": 100,
+    "payment_type": "POS",
+    "payment_method": "CC",
+    "transaction_id": "uuid",
+    "tax_rate": 0,
+    "installment": 0
+  },
+  "header": {
+    "transaction_type": "POST_EFTPOS",
+    "client_token": "token",
+    "serial_no": "serial"
+  }
+}
+```
+
+## Standart Ödeme
+
+```json
+{
+  "data": {
+    "payment_type": "POS",
+    "payment_method": "CC",
+    "total_amount": 100
+  },
+  "header": {
+    "transaction_type": "POST_PAYMENT_START",
+    "client_token": "token",
+    "serial_no": "serial",
+    "order_code": "order"
+  }
+}
+```
+
+## EFT İptal
+
+```json
+{
+  "data": { "total_amount": 100 },
+  "header": {
+    "transaction_type": "POST_EFTPOS_CANCEL",
+    "client_token": "token",
+    "serial_no": "serial",
+    "transaction_id": "tx"
+  }
+}
+```
+
+## Ödeme İptal
+
+```json
+{
+  "data": {
+    "transaction_id": "tx",
+    "note": "reason"
+  },
+  "header": {
+    "transaction_type": "POST_PAYMENT_CANCEL",
+    "client_token": "token",
+    "serial_no": "serial",
+    "order_code": "order"
+  }
+}
+```
+
+## Parametre Güncelleme
+
+```json
+{
+  "data": {
+    "is_all": false,
+    "types": ["bank", "multinet"]
+  },
+  "header": {
+    "transaction_type": "PARAMETERS",
+    "client_token": "token",
+    "serial_no": "serial"
+  }
+}
+```
+
+## Gün Sonu
+
+```json
+{
+  "data": {
+    "is_all": false,
+    "types": ["POS", "CASH"]
+  },
+  "header": {
+    "transaction_type": "EOD",
+    "client_token": "token",
+    "serial_no": "serial"
+  }
+}
+```
+
+## Sipariş Ödeme
+
+```json
+{
+  "header": {
+    "transaction_type": "ORDER_PAYMENT",
+    "client_token": "token",
+    "serial_no": "serial",
+    "order_code": "order"
+  }
+}
+```
+
+---
+
 # ✅ Notlar
 
 * Her işlem benzersiz transaction ID kullanmalıdır
 * Callback / exception yönetimi zorunludur
 * Activity destroy sırasında `dispose()` çağrılmalıdır
+
+---
