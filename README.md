@@ -304,7 +304,7 @@ CANCEL, NOT_RESPONSE, WAITING, SUCCESS
 
 # 📄 JSON Referansları
 
-⚠ Bu JSON modelleri için, Header yapısı .toRequest() işlevi ile SDK tarafından otomatik oluşturulur. Manuel üretmeniz gerekmez. Yalnızca referans amaçlıdır.
+⚠ Bu JSON modelleri için header yapısı .toRequest() işlevi ile SDK tarafından otomatik oluşturulur. Manuel üretmeniz gerekmez. Yalnızca referans amaçlıdır.
 
 ## EFT Ödeme
 
