@@ -51,8 +51,7 @@ PPEftPaymentRequestModel request =
                 UUID.randomUUID().toString(),
                 0,
                 0,
-                "your_token",
-                "P14240701371"
+                "your_token"
         );
 
 try {
@@ -86,10 +85,9 @@ try {
 try {
     PPEftCancelRequestModel request =
             PPEftCancelRequestModel.toRequest(
-                    "",
+                    "transaction_id",
                     100,
-                    "token",
-                    "P14240701371"
+                    "token"
             );
 
     client.cancelEftPayment(
@@ -128,7 +126,6 @@ PPParameterRequestModel request =
         PPParameterRequestModel.toRequest(
                 types,
                 false,
-                "P14240701371",
                 "client_token"
         );
 
@@ -170,8 +167,7 @@ PPEodRequestModel request =
         PPEodRequestModel.toRequest(
                 types,
                 false,
-                "token",
-                "P14240701371"
+                "token"
         );
 
 try {
@@ -320,8 +316,7 @@ CANCEL, NOT_RESPONSE, WAITING, SUCCESS
   },
   "header": {
     "transaction_type": "POST_EFTPOS",
-    "client_token": "token",
-    "serial_no": "serial"
+    "client_token": "token"
   }
 }
 ```
@@ -338,7 +333,6 @@ CANCEL, NOT_RESPONSE, WAITING, SUCCESS
   "header": {
     "transaction_type": "POST_PAYMENT_START",
     "client_token": "token",
-    "serial_no": "serial",
     "order_code": "order"
   }
 }
@@ -352,8 +346,7 @@ CANCEL, NOT_RESPONSE, WAITING, SUCCESS
   "header": {
     "transaction_type": "POST_EFTPOS_CANCEL",
     "client_token": "token",
-    "serial_no": "serial",
-    "transaction_id": "tx"
+    "transaction_id": "txn_id"
   }
 }
 ```
@@ -369,7 +362,6 @@ CANCEL, NOT_RESPONSE, WAITING, SUCCESS
   "header": {
     "transaction_type": "POST_PAYMENT_CANCEL",
     "client_token": "token",
-    "serial_no": "serial",
     "order_code": "order"
   }
 }
@@ -386,7 +378,6 @@ CANCEL, NOT_RESPONSE, WAITING, SUCCESS
   "header": {
     "transaction_type": "PARAMETERS",
     "client_token": "token",
-    "serial_no": "serial"
   }
 }
 ```
@@ -402,7 +393,6 @@ CANCEL, NOT_RESPONSE, WAITING, SUCCESS
   "header": {
     "transaction_type": "EOD",
     "client_token": "token",
-    "serial_no": "serial"
   }
 }
 ```
@@ -414,7 +404,6 @@ CANCEL, NOT_RESPONSE, WAITING, SUCCESS
   "header": {
     "transaction_type": "ORDER_PAYMENT",
     "client_token": "token",
-    "serial_no": "serial",
     "order_code": "order"
   }
 }
