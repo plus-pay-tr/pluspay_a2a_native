@@ -316,24 +316,31 @@ CANCEL, NOT_RESPONSE, WAITING, SUCCESS
   },
   "header": {
     "transaction_type": "POST_EFTPOS",
-    "client_token": "token"
+    "client_token": "your_token"
   }
 }
 ```
 
 ## Standart Ödeme
+##### Parçalı ödeme yapılmayacaksa, partial_type : null gönderilmelidir. Ürün bazlı parçalı ödeme yapılacaksa, partial_type : "PRODUCT", product listesi ile gönderilmelidir(product id'ler eşleşmeli). Tutar bazlı parçalı ödeme için partial_Type : "AMOUNT" yapılmalıdır.
 
 ```json
 {
   "data": {
     "payment_type": "POS",
     "payment_method": "CC",
-    "total_amount": 100
+    "total_amount": 100,
+    "installment":0,
+    "is_partial": false,
+    "partial_type": null,
+    "products": Collections.emptyList(),
+    "billing_information" : null
+
   },
   "header": {
     "transaction_type": "POST_PAYMENT_START",
-    "client_token": "token",
-    "order_code": "order"
+    "client_token": "your_token",
+    "order_code": "order_code"
   }
 }
 ```
@@ -346,7 +353,7 @@ CANCEL, NOT_RESPONSE, WAITING, SUCCESS
   "header": {
     "transaction_type": "POST_EFTPOS_CANCEL",
     "client_token": "token",
-    "transaction_id": "txn_id"
+    "transaction_id": "uuid"
   }
 }
 ```
@@ -356,13 +363,13 @@ CANCEL, NOT_RESPONSE, WAITING, SUCCESS
 ```json
 {
   "data": {
-    "transaction_id": "tx",
+    "transaction_id": "uuid",
     "note": "reason"
   },
   "header": {
     "transaction_type": "POST_PAYMENT_CANCEL",
-    "client_token": "token",
-    "order_code": "order"
+    "client_token": "your_token",
+    "order_code": "order_code"
   }
 }
 ```
@@ -377,7 +384,7 @@ CANCEL, NOT_RESPONSE, WAITING, SUCCESS
   },
   "header": {
     "transaction_type": "PARAMETERS",
-    "client_token": "token",
+    "client_token": "your_token",
   }
 }
 ```
@@ -392,19 +399,20 @@ CANCEL, NOT_RESPONSE, WAITING, SUCCESS
   },
   "header": {
     "transaction_type": "EOD",
-    "client_token": "token",
+    "client_token": "your_token",
   }
 }
 ```
 
 ## Sipariş Ödeme
+#### Ödeme yönteminin pos ekranından seçilmesini sağlar.
 
 ```json
 {
   "header": {
     "transaction_type": "ORDER_PAYMENT",
-    "client_token": "token",
-    "order_code": "order"
+    "client_token": "your_token",
+    "order_code": "order_code"
   }
 }
 ```
