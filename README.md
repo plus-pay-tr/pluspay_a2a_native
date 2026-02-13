@@ -322,7 +322,7 @@ CANCEL, NOT_RESPONSE, WAITING, SUCCESS
 ```
 
 ## Standart Ödeme
-##### Parçalı ödeme yapılmayacaksa, partial_type : null gönderilmelidir. Ürün bazlı parçalı ödeme yapılacaksa, partial_type : "PRODUCT", product listesi ile gönderilmelidir(product id'ler eşleşmeli). Tutar bazlı parçalı ödeme için partial_Type : "AMOUNT" yapılmalıdır.
+##### Parçalı ödeme yapılmayacaksa, partial_type : null gönderilmelidir. Ürün bazlı parçalı ödeme yapılacaksa, partial_type : "PRODUCT", product listesi ile gönderilmelidir(product id'ler eşleşmeli). Tutar bazlı parçalı ödeme için partial_type : "AMOUNT" yapılmalıdır.
 
 ```json
 {
